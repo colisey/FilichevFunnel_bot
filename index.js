@@ -8,6 +8,7 @@ const { gameOptions } = require("./options");
 const bot = new TelegramApi(token, { polling: true });
 
 const chats = {};
+const webAppUrl = "https://aesthetic-granita-6e61e0.netlify.app/";
 
 const start = async () => {
   try {
@@ -26,19 +27,48 @@ const start = async () => {
   bot.on("message", async (msg) => {
     const text = msg.text;
     const chatId = msg.chat.id;
+    const UserId = msg.from.id;
+    const img = await bot.getUserProfilePhotos(UserId);
 
     try {
       switch (text) {
         case "/start":
-          await UserModel.create({ chatId });
+          // console.log("img", JSON.stringify(img.photos[0][0]) );
+          // console.log("UserId", UserId);
+
+          
+
+          await bot.sendMessage(
+            chatId,
+            `Ниже появится кнопка, заполни форму 👇👇👇`
+          );
           await bot.sendSticker(
             chatId,
             `https://tlgrm.ru/_/stickers/ef5/8e1/ef58e15f-94a2-3d56-a365-ca06e1339d08/7.webp`
           );
+          // await bot.sendSticker(
+          //   chatId,
+          //   img
+          // );
           await bot.sendMessage(
             chatId,
-            `Приветствую тебя в моём тестовом боте`
+            `Ниже появится кнопка, заполни форму 👇👇👇`,
+            {
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: "inline_keyboard", web_app: { url: webAppUrl+'/form' } }],
+                ],
+                // keyboard: [
+                //   [
+                //     { text: "Заполнить форму" },
+                //     { text: "Заполнить форму" },
+                //     { text: "Заполнить форму" },
+                //   ]
+                // ],
+              },
+            }
           );
+          await UserModel.create({ chatId });
           break;
 
         case "/info":
@@ -66,7 +96,8 @@ const start = async () => {
           break;
       }
     } catch (e) {
-      return bot.sendMessage(chatId, "Произошла какая то ошибка!");
+      // console.log("e", e);
+      return bot.sendMessage(chatId, `Произошла какая то ошибка! 11 ${e}`);
     }
 
     // console.log(msg);
