@@ -56,7 +56,7 @@ const start = async () => {
             {
               reply_markup: {
                 inline_keyboard: [
-                  [{ text: "inline_keyboard", web_app: { url: webAppUrl+'/form' } }],
+                  [{ text: "inline_keyboard", web_app: { url: webAppUrl+'form' } }],
                 ],
                 // keyboard: [
                 //   [
